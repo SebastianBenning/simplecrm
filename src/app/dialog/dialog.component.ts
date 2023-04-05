@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { User } from 'src/models/user.class';
-import { Firestore, doc, setDoc } from '@angular/fire/firestore';
-import { getFirestore } from "firebase/firestore";
+import { Firestore, doc, setDoc, collection } from '@angular/fire/firestore';
+import { MatDialogRef } from '@angular/material/dialog';
+
 @Component({
   selector: 'app-dialog',
   templateUrl: './dialog.component.html',
@@ -11,18 +12,16 @@ export class DialogComponent {
   firestore: Firestore = inject(Firestore);
   user = new User();
   birthDay!: Date;
-  db = getFirestore();
-  constructor() { }
+  loading= false;
+  constructor(public dialogRef: MatDialogRef<DialogComponent>) { }
 
   async saveUser() {
     this.user.birthdate = this.birthDay.getTime();
-    console.log('current user', this.user);
-
-    await setDoc(doc(this.firestore, 'user'), this.user.toJSON);
-
-    
-
-
+    this.loading=true;
+    let newUserRef = doc(collection(this.firestore, 'users'));
+    await setDoc(newUserRef, this.user.toJSON());
+    this.loading=false;
+    this.dialogRef.close();
   }
 }
 

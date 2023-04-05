@@ -33,7 +33,5 @@ export class UserComponent {
 }
 
 
-function setApps(arg0: any) {
-  throw new Error('Function not implemented.');
-}
+
 
